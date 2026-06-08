@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Project page for Latent Environment Navigation for CT-to-MRI Translation via Reinforcement Learning." />
+  <title>CT-to-MRI Translation via Flow-guided RL</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#overview">Overview</a>
+      <a href="#figures">Motivation</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+    </nav>
+
+    <div class="hero-content">
+      <p class="eyebrow">535510 RL Team Project · NYCU 2026</p>
+      <h1>Latent Environment Navigation for CT-to-MRI Translation via Reinforcement Learning</h1>
+      <p class="authors">Luu Van Tin · Le Thi An · Kanjanaporn Tangprapha</p>
+      <p class="subtitle">
+        A low-resource CT-to-MRI translation framework that treats translation as progressive latent-space
+        navigation. Flow Matching provides a stable global transport prior, while reinforcement learning
+        adds adaptive local trajectory correction.
+      </p>
+      <div class="cta-row">
+        <a class="btn primary" href="#figures">View motivation</a>
+        <a class="btn" href="#results">See results</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="overview" class="section">
+      <div class="section-heading">
+        <p class="kicker">Overview</p>
+        <h2>CT-to-MRI translation as multi-step latent navigation</h2>
+      </div>
+      <p>
+        CT-to-MRI translation is useful for medical image analysis, but paired CT-MRI data is expensive
+        and limited in real clinical settings. Instead of learning a direct one-step CT-to-MRI latent mapping,
+        this project reformulates translation as a trajectory-guided latent transport problem.
+      </p>
+      <p>
+        The core idea is to combine a Flow Matching prior with an RL correction policy. The prior gives
+        globally consistent motion toward the MRI latent manifold, while the RL agent learns small local
+        corrections along the path.
+      </p>
+      <div class="highlight-box">
+        <strong>TL;DR:</strong> Flow-guided RL improves CT-to-MRI translation under limited data, achieving
+        stronger SSIM, PSNR, and MAE than the evaluated baselines in the 10-paired-scan setting.
+      </div>
+    </section>
+
+    <section id="figures" class="section">
+      <div class="section-heading">
+        <p class="kicker">Motivation</p>
+        <h2>Motivation of this project</h2>
+      </div>
+      <p class="note">
+        The PDF file is intentionally not included yet. This page only uses the figures that are already
+        available in the current report draft.
+      </p>
+      <p>
+        The motivation comes from a key limitation of direct one-step latent alignment: when paired CT-MRI
+        training data is limited, the model may fail to learn reliable cross-modal correspondence. Therefore,
+        this project explores a multi-step latent transport approach, where Flow Matching gives a stable
+        trajectory and reinforcement learning performs adaptive corrections.
+      </p>
+
+      <figure class="wide-figure">
+        <img src="assets/figures/figure-01.png" alt="Comparison between one-step latent mapping and flow-guided latent transport" />
+        <figcaption>
+          <strong>Motivation Figure 1.</strong> Conventional one-step latent mapping directly translates CT
+          latents into MRI latents, while the proposed idea treats translation as trajectory-guided latent
+          transport. This motivates using a progressive path instead of a single forward mapping.
+        </figcaption>
+      </figure>
+
+      <figure class="wide-figure compact">
+        <img src="assets/figures/figure-02.png" alt="Failure of one-step latent alignment under limited-data training" />
+        <figcaption>
+          <strong>Motivation Figure 2.</strong> Under limited-data training with only 10 paired CT-MRI scans,
+          the one-step ALDM baseline collapses into noisy low-information outputs. This motivates a more
+          data-efficient trajectory-based method.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section id="method" class="section">
+      <div class="section-heading">
+        <p class="kicker">Method</p>
+        <h2>Flow-guided reinforcement learning</h2>
+      </div>
+      <p>
+        The method combines a Prior Flow Generator and a Flow Correction Agent inside a latent transport
+        environment. The Flow Matching prior gives the main direction from CT latent space toward MRI latent
+        space, and the RL policy learns small corrections at each integration step.
+      </p>
+
+      <figure class="wide-figure">
+        <img src="assets/figures/figure-03.png" alt="Flow-guided reinforcement learning framework overview" />
+        <figcaption>
+          <strong>Method Figure.</strong> Overview of the Flow-guided Reinforcement Learning framework,
+          including the latent transport environment, prior flow generator, correction agent, and reward
+          components.
+        </figcaption>
+      </figure>
+
+      <div class="method-grid">
+        <article>
+          <span class="step">01</span>
+          <h3>Shared latent space</h3>
+          <p>CT and MRI images are encoded into latent representations using modality-specific VAEs.</p>
+        </article>
+        <article>
+          <span class="step">02</span>
+          <h3>Flow Matching prior</h3>
+          <p>The prior flow gives a smooth multi-step trajectory from CT latent space to MRI latent space.</p>
+        </article>
+        <article>
+          <span class="step">03</span>
+          <h3>RL correction policy</h3>
+          <p>The RL agent predicts small corrections at each integration step instead of replacing the flow.</p>
+        </article>
+        <article>
+          <span class="step">04</span>
+          <h3>Flow Improvement Reward</h3>
+          <p>The reward measures whether the RL-corrected path improves over pure Flow Matching.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="results" class="section">
+      <div class="section-heading">
+        <p class="kicker">Results</p>
+        <h2>Main limited-data comparison</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Paradigm</th>
+              <th>SSIM ↑</th>
+              <th>PSNR ↑</th>
+              <th>MAE ↓</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ALDM</td>
+              <td>One-step latent alignment</td>
+              <td>0.1023</td>
+              <td>7.486</td>
+              <td>0.3295</td>
+            </tr>
+            <tr>
+              <td>Flow Matching</td>
+              <td>Multi-step ODE</td>
+              <td>0.7916</td>
+              <td>16.4415</td>
+              <td>0.1195</td>
+            </tr>
+            <tr class="best-row">
+              <td>Flow-guided RL</td>
+              <td>Multi-step ODE + adaptive RL</td>
+              <td>0.8007</td>
+              <td>16.6080</td>
+              <td>0.0412</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="result-cards">
+        <div><strong>Best SSIM</strong><span>0.8007</span></div>
+        <div><strong>Best PSNR</strong><span>16.6080</span></div>
+        <div><strong>Best MAE</strong><span>0.0412</span></div>
+      </div>
+    </section>
+
+    <section class="section split">
+      <div>
+        <p class="kicker">Key Insight</p>
+        <h2>Where RL intervenes matters</h2>
+        <p>
+          Post-flow RL acts only after Flow Matching reaches a near-converged endpoint, where the reward
+          landscape is almost flat. Interleaved RL acts at each ODE step, giving denser and more informative
+          feedback for trajectory correction.
+        </p>
+      </div>
+      <div class="insight-card">
+        <strong>Design choice</strong>
+        <span>Interleaved RL correction</span>
+        <p>Small local corrections preserve the global flow trajectory while improving the final MRI latent.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>535510 Reinforcement Learning · NYCU · 2026</p>
+  </footer>
+</body>
+</html>
