@@ -26,6 +26,7 @@ body {
 a { color: inherit; }
 img { max-width: 100%; display: block; }
 
+/* ── Hero ───────────────────────────────────────────────────────────────── */
 .hero {
   padding: 26px 24px 76px;
   background: linear-gradient(135deg, #121827 0%, #202b48 55%, #33406b 100%);
@@ -82,6 +83,19 @@ h1 {
   font-weight: 650;
 }
 
+.affil {
+  margin: 8px 0 0;
+  color: rgba(255,255,255,.60);
+  font-size: 0.92rem;
+}
+
+.equal-contrib {
+  margin: 6px 0 0;
+  color: rgba(255,255,255,.45);
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
 .subtitle {
   max-width: 820px;
   margin: 20px auto 0;
@@ -116,6 +130,7 @@ h1 {
   border-color: #fff;
 }
 
+/* ── Layout ─────────────────────────────────────────────────────────────── */
 main {
   width: min(1080px, calc(100% - 32px));
   margin: -38px auto 60px;
@@ -140,13 +155,30 @@ h2 {
   letter-spacing: -0.03em;
 }
 
+h3 { margin: 20px 0 8px; line-height: 1.25; }
+
 p { color: var(--muted); }
 
-.note {
-  padding: 14px 16px;
+/* ── Callout boxes ───────────────────────────────────────────────────────── */
+.abstract-box {
+  margin-top: 20px;
+  padding: 20px 22px;
   border-left: 4px solid var(--primary);
-  background: var(--soft);
+  background: #eff6ff;
   border-radius: 14px;
+}
+
+.abstract-box p { color: #334155; margin: 0 0 12px; }
+.abstract-box p:last-child { margin-bottom: 0; }
+
+.tldr-box {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: #fefce8;
+  border: 1px solid #fde68a;
+  color: #78350f;
+  font-size: 1rem;
 }
 
 .highlight-box {
@@ -158,6 +190,107 @@ p { color: var(--muted); }
   color: #7b5315;
 }
 
+.positive-box {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+
+.warning-box {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #7c2d12;
+}
+
+.insight-box {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: 16px;
+  background: #fefce8;
+  border: 2px solid #fbbf24;
+  color: #78350f;
+}
+
+.insight-box p { color: inherit; margin: 8px 0 0; }
+
+.note {
+  padding: 14px 16px;
+  border-left: 4px solid var(--primary);
+  background: var(--soft);
+  border-radius: 14px;
+}
+
+/* ── Data Efficiency box ─────────────────────────────────────────────────── */
+.data-eff-box {
+  margin-top: 24px;
+  padding: 24px 26px;
+  border-radius: 18px;
+  background: #eff6ff;
+  border: 2px solid #6366f1;
+}
+
+.data-eff-title {
+  margin: 0 0 10px;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #3730a3;
+}
+
+.data-eff-box p { color: #1e3a5f; margin: 0 0 12px; }
+.data-eff-box p:last-child { margin-bottom: 0; }
+
+.eff-compare {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin: 18px 0;
+  flex-wrap: wrap;
+}
+
+.eff-item { text-align: center; }
+
+.eff-label {
+  display: block;
+  font-size: .85rem;
+  color: #475569;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.eff-val {
+  display: block;
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.eff-val.bad  { color: #dc2626; }
+.eff-val.good { color: #15803d; }
+
+.eff-sub {
+  display: block;
+  font-size: .8rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.eff-arrow {
+  font-size: 2rem;
+  color: #6366f1;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.eff-note { font-size: .85rem; color: #64748b; margin-top: 6px; }
+
+/* ── Method grid ─────────────────────────────────────────────────────────── */
 .method-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -183,8 +316,7 @@ p { color: var(--muted); }
   font-weight: 900;
 }
 
-h3 { margin: 16px 0 8px; line-height: 1.25; }
-
+/* ── Figures ─────────────────────────────────────────────────────────────── */
 .wide-figure {
   margin: 28px 0 0;
   padding: 16px;
@@ -211,6 +343,21 @@ figcaption {
   font-size: .95rem;
 }
 
+.figure-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.training-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 18px;
+}
+
+/* ── Results table ───────────────────────────────────────────────────────── */
 .table-wrap {
   overflow-x: auto;
   border-radius: 18px;
@@ -221,7 +368,7 @@ figcaption {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 720px;
+  min-width: 600px;
   background: white;
 }
 
@@ -239,8 +386,20 @@ th {
 }
 
 tr:last-child td { border-bottom: 0; }
-.best-row td { background: var(--good); font-weight: 800; }
+.best-row td { background: var(--good); font-weight: 700; }
+.best-overall td { background: #d1fae5; }
 
+.sep-row td {
+  border-top: 2px solid var(--line);
+  color: var(--muted);
+  font-style: italic;
+  background: #fafafa;
+}
+
+.outcome-good { color: #166534; }
+.outcome-bad  { color: #991b1b; }
+
+/* ── Result summary cards ────────────────────────────────────────────────── */
 .result-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -269,6 +428,7 @@ tr:last-child td { border-bottom: 0; }
   letter-spacing: -0.04em;
 }
 
+/* ── Split layout ────────────────────────────────────────────────────────── */
 .split {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr);
@@ -276,14 +436,20 @@ tr:last-child td { border-bottom: 0; }
   align-items: center;
 }
 
+/* ── Footer ──────────────────────────────────────────────────────────────── */
 footer {
   text-align: center;
   padding: 40px 20px;
   color: var(--muted);
 }
 
+/* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 860px) {
   .nav { justify-content: center; margin-bottom: 44px; }
-  .method-grid, .result-cards, .split { grid-template-columns: 1fr; }
+  .method-grid,
+  .result-cards,
+  .figure-row,
+  .training-grid,
+  .split { grid-template-columns: 1fr; }
   .hero { padding-bottom: 58px; }
 }
