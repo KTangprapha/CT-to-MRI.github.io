@@ -3,141 +3,158 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Project page for Latent Environment Navigation for CT-to-MRI Translation via Reinforcement Learning." />
-  <title>CT-to-MRI Translation via Flow-guided RL</title>
+  <meta name="description" content="Latent Environment Navigation for CT-to-MRI Translation via Reinforcement Learning — NYCU 2026." />
+  <title>CT-to-MRI via Flow-guided RL</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="hero">
     <nav class="nav" aria-label="Main navigation">
-      <a href="#overview">Overview</a>
-      <a href="#figures">Motivation</a>
+      <a href="#abstract">Abstract</a>
       <a href="#method">Method</a>
       <a href="#results">Results</a>
+      <a href="#ablation">Ablation</a>
+      <a href="#analysis">Analysis</a>
     </nav>
 
     <div class="hero-content">
       <p class="eyebrow">535510 RL Team Project · NYCU 2026</p>
       <h1>Latent Environment Navigation for CT-to-MRI Translation via Reinforcement Learning</h1>
-      <p class="authors">Luu Van Tin · Le Thi An · Kanjanaporn Tangprapha</p>
-      <p class="subtitle">
-        A low-resource CT-to-MRI translation framework that treats translation as progressive latent-space
-        navigation. Flow Matching provides a stable global transport prior, while reinforcement learning
-        adds adaptive local trajectory correction.
-      </p>
+      <p class="authors">Luu Van Tin<sup>*</sup> · Le Thi An<sup>*</sup> · Kanjanaporn Tangprapha<sup>*</sup></p>
+      <p class="affil">Department of Computer Science, National Yang Ming Chiao Tung University</p>
+      <p class="equal-contrib"><sup>*</sup>Equal contribution</p>
       <div class="cta-row">
-        <a class="btn primary" href="#figures">View motivation</a>
+        <a class="btn primary" href="assets/figures/RL_final.pdf" target="_blank" rel="noopener">📄 Full Paper (PDF)</a>
+        <a class="btn" href="#abstract">Read abstract</a>
         <a class="btn" href="#results">See results</a>
       </div>
     </div>
   </header>
 
   <main>
-    <section id="overview" class="section">
+
+    <!-- Overview figure -->
+    <section class="section">
+      <figure class="wide-figure">
+        <img src="assets/figures/fig_1.png" alt="Overview comparing one-step latent mapping with trajectory-guided latent transport" />
+        <figcaption>
+          <strong>Overview.</strong> Conventional one-step latent mapping methods (top) rely on a translator network to learn the entire CT-to-MRI transformation in a single forward prediction. Our method (bottom) reformulates translation as a trajectory-guided latent transport process. A Prior Flow Field provides globally consistent transport directions, while a Flow Correction Agent progressively refines the trajectory through adaptive corrections at each transport step.
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- Abstract -->
+    <section id="abstract" class="section">
       <div class="section-heading">
-        <p class="kicker">Overview</p>
-        <h2>CT-to-MRI translation as multi-step latent navigation</h2>
+        <p class="kicker">Abstract</p>
+        <h2>CT-to-MRI translation under extreme data scarcity</h2>
       </div>
-      <p>
-        CT-to-MRI translation is useful for medical image analysis, but paired CT-MRI data is expensive
-        and limited in real clinical settings. Instead of learning a direct one-step CT-to-MRI latent mapping,
-        this project reformulates translation as a trajectory-guided latent transport problem.
-      </p>
-      <p>
-        The core idea is to combine a Flow Matching prior with an RL correction policy. The prior gives
-        globally consistent motion toward the MRI latent manifold, while the RL agent learns small local
-        corrections along the path.
-      </p>
-      <div class="highlight-box">
-        <strong>TL;DR:</strong> Flow-guided RL improves CT-to-MRI translation under limited data, achieving
-        stronger SSIM, PSNR, and MAE than the evaluated baselines in the 10-paired-scan setting.
+
+      <div class="abstract-box">
+        <p>CT-to-MRI translation is clinically valuable but remains challenging when only a limited number of paired scans are available — a common constraint in real-world medical settings. Existing latent translation approaches typically formulate the task as a one-step alignment problem, requiring the model to learn a direct cross-modal mapping from sparse supervision. Such methods are highly sensitive to data scarcity and often suffer from degraded latent correspondence when paired samples are limited.</p>
+        <p>In this work, we reformulate CT-to-MRI translation as a <strong>multi-step latent transport</strong> problem. Our framework combines a <strong>Flow Matching (FM)</strong> prior, which provides globally consistent transport trajectories in latent space, with an <strong>RL correction policy</strong> that performs adaptive local refinements along the trajectory. To enable stable RL optimization under extremely limited supervision, we introduce the <strong>Flow Improvement Reward (FIR)</strong>: a relative reward that measures improvement over the FM prior rather than absolute distance to the target modality, substantially reducing reliance on large paired datasets.</p>
+        <p>Experiments demonstrate that the proposed method remains effective with as few as 10 paired scans. Using approximately 1% of the training data required by previous latent alignment methods, our approach achieves SSIM = 0.7300 — surpassing ALDM trained on the full dataset (SSIM = 0.6711).</p>
+      </div>
+
+      <div class="tldr-box">
+        <strong>TL;DR</strong> &nbsp;We model CT→MRI translation as multi-step latent navigation and use RL to adaptively refine Flow Matching trajectories — achieving better SSIM, PSNR, and MAE than all baselines <em>with only 10 paired training scans</em>, addressing the critical data scarcity challenge in medical imaging.
       </div>
     </section>
 
-    <section id="figures" class="section">
+    <!-- Contributions -->
+    <section class="section">
+      <div class="section-heading">
+        <p class="kicker">Contributions</p>
+        <h2>What this work contributes</h2>
+      </div>
+
+      <div class="method-grid">
+        <article>
+          <span class="step">01</span>
+          <h3>Failure mode analysis of ALDM</h3>
+          <p>We show VQ-VAE codebook collapse is the root cause of ALDM's failure under limited data, supported by quantitative and latent-space (UMAP/PCA) evidence.</p>
+        </article>
+        <article>
+          <span class="step">02</span>
+          <h3>First RL framework for latent cross-modal translation</h3>
+          <p>A Flow Matching prior provides global transport direction while the RL correction policy handles local texture refinement — addressing FM's regression-to-mean limitation.</p>
+        </article>
+        <article>
+          <span class="step">03</span>
+          <h3>Flow Improvement Reward (FIR)</h3>
+          <p>A relative reward signal measuring improvement over the FM prior at each ODE step, enabling stable RL training without large paired datasets.</p>
+        </article>
+        <article>
+          <span class="step">04</span>
+          <h3>SSIM 0.7300 with only 10 scans</h3>
+          <p>~1% of the training data required by ALDM (~900 scans), yet surpassing ALDM trained on the full SynthRAD2025 dataset (SSIM = 0.6711).</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Motivation: ALDM failure -->
+    <section class="section">
       <div class="section-heading">
         <p class="kicker">Motivation</p>
-        <h2>Motivation of this project</h2>
+        <h2>One-step alignment fails under limited data</h2>
       </div>
-      <p class="note">
-        The PDF file is intentionally not included yet. This page only uses the figures that are already
-        available in the current report draft.
-      </p>
-      <p>
-        The motivation comes from a key limitation of direct one-step latent alignment: when paired CT-MRI
-        training data is limited, the model may fail to learn reliable cross-modal correspondence. Therefore,
-        this project explores a multi-step latent transport approach, where Flow Matching gives a stable
-        trajectory and reinforcement learning performs adaptive corrections.
-      </p>
-
-      <figure class="wide-figure">
-        <img src="assets/figures/figure-01.png" alt="Comparison between one-step latent mapping and flow-guided latent transport" />
-        <figcaption>
-          <strong>Motivation Figure 1.</strong> Conventional one-step latent mapping directly translates CT
-          latents into MRI latents, while the proposed idea treats translation as trajectory-guided latent
-          transport. This motivates using a progressive path instead of a single forward mapping.
-        </figcaption>
-      </figure>
+      <p>Existing latent-space approaches such as ALDM formulate CT-to-MRI translation as a one-step latent mapping problem. While effective with sufficient training data, these methods become highly sensitive to limited supervision. With only 10 paired CT-MRI scans, ALDM's VQ-VAE codebook collapses — generated outputs degrade into noisy, low-information patterns.</p>
 
       <figure class="wide-figure compact">
-        <img src="assets/figures/figure-02.png" alt="Failure of one-step latent alignment under limited-data training" />
+        <img src="assets/figures/aldm_comparison.png" alt="ALDM failure under limited-data training versus full-data training" />
         <figcaption>
-          <strong>Motivation Figure 2.</strong> Under limited-data training with only 10 paired CT-MRI scans,
-          the one-step ALDM baseline collapses into noisy low-information outputs. This motivates a more
-          data-efficient trajectory-based method.
+          <strong>ALDM under limited data.</strong> When trained on the full dataset, ALDM generates anatomically plausible MRI images from CT inputs. With only 10 paired CT-MRI scans, the generated outputs collapse into noisy and low-information patterns, demonstrating that direct latent alignment is highly sensitive to data scarcity.
         </figcaption>
       </figure>
     </section>
 
+    <!-- Method -->
     <section id="method" class="section">
       <div class="section-heading">
         <p class="kicker">Method</p>
-        <h2>Flow-guided reinforcement learning</h2>
+        <h2>Flow-guided Reinforcement Learning (FGRL)</h2>
       </div>
-      <p>
-        The method combines a Prior Flow Generator and a Flow Correction Agent inside a latent transport
-        environment. The Flow Matching prior gives the main direction from CT latent space toward MRI latent
-        space, and the RL policy learns small corrections at each integration step.
-      </p>
+      <p>The FGRL framework performs CT-to-MRI translation through progressive latent transport within a shared latent space. Three components work together: a <strong>Prior Flow Generator</strong> providing globally consistent transport directions; a <strong>Latent Transport Environment</strong> modeling the transformation as sequential navigation; and a <strong>Flow Correction Agent</strong> adaptively refining the trajectory via RL.</p>
 
       <figure class="wide-figure">
-        <img src="assets/figures/figure-03.png" alt="Flow-guided reinforcement learning framework overview" />
+        <img src="assets/figures/fig_2.png" alt="FGRL framework overview" />
         <figcaption>
-          <strong>Method Figure.</strong> Overview of the Flow-guided Reinforcement Learning framework,
-          including the latent transport environment, prior flow generator, correction agent, and reward
-          components.
+          <strong>Framework overview.</strong> The CT image is encoded into latent z<sub>CT</sub> and progressively transported toward the target MRI latent z<sub>MRI</sub>. A Prior Flow Generator defines the initial transport direction; a Flow Correction Agent predicts adaptive corrections at each integration step. Training uses a Prior-Flow Improvement Reward combining adversarial realism, perceptual fidelity, trajectory improvement over FM, and terminal convergence.
         </figcaption>
       </figure>
 
       <div class="method-grid">
         <article>
           <span class="step">01</span>
-          <h3>Shared latent space</h3>
-          <p>CT and MRI images are encoded into latent representations using modality-specific VAEs.</p>
+          <h3>Prior Flow Generator</h3>
+          <p>Flow Matching learns a conditional transport process between paired CT and MRI modalities directly — not from noise. Euler integration over N = 16 steps yields a stable global trajectory.</p>
         </article>
         <article>
           <span class="step">02</span>
-          <h3>Flow Matching prior</h3>
-          <p>The prior flow gives a smooth multi-step trajectory from CT latent space to MRI latent space.</p>
+          <h3>Flow Correction Agent</h3>
+          <p>Predicts corrections decomposed into flow-parallel (speed adjustment) and flow-orthogonal (manifold correction) components on top of the FM prior, rather than learning transport from scratch.</p>
         </article>
         <article>
           <span class="step">03</span>
-          <h3>RL correction policy</h3>
-          <p>The RL agent predicts small corrections at each integration step instead of replacing the flow.</p>
+          <h3>Prior-Flow Improvement Reward</h3>
+          <p>Four components: adversarial realism, SSIM improvement over FM, high-frequency detail recovery, latent transport improvement, and a terminal convergence penalty at the final step.</p>
         </article>
         <article>
           <span class="step">04</span>
-          <h3>Flow Improvement Reward</h3>
-          <p>The reward measures whether the RL-corrected path improves over pure Flow Matching.</p>
+          <h3>Policy Optimization</h3>
+          <p>FGRL-Lite uses REINFORCE (proof-of-concept). FGRL-Full uses PPO with ε = 0.1 clipping and 4 epochs per rollout for stable long-horizon trajectory optimization.</p>
         </article>
       </div>
     </section>
 
+    <!-- Results -->
     <section id="results" class="section">
       <div class="section-heading">
         <p class="kicker">Results</p>
-        <h2>Main limited-data comparison</h2>
+        <h2>Main comparison — 10 paired CT-MRI scans</h2>
       </div>
+      <p>All experiments (except ALDM Full data) use only 10 paired abdomen CT-MRI scans — ~1% of SynthRAD2025. Both FGRL variants outperform their respective Flow Matching baselines; FGRL-Full surpasses ALDM trained on the full dataset.</p>
+
       <div class="table-wrap">
         <table>
           <thead>
@@ -146,7 +163,6 @@
               <th>Paradigm</th>
               <th>SSIM ↑</th>
               <th>PSNR ↑</th>
-              <th>MAE ↓</th>
             </tr>
           </thead>
           <tbody>
@@ -155,48 +171,326 @@
               <td>One-step latent alignment</td>
               <td>0.1023</td>
               <td>7.486</td>
-              <td>0.3295</td>
             </tr>
             <tr>
-              <td>Flow Matching</td>
-              <td>Multi-step ODE</td>
-              <td>0.7916</td>
+              <td>Flow Matching (Lite)</td>
+              <td>Multi-step latent transport</td>
+              <td>0.4916</td>
               <td>16.4415</td>
-              <td>0.1195</td>
             </tr>
             <tr class="best-row">
-              <td>Flow-guided RL</td>
-              <td>Multi-step ODE + adaptive RL</td>
-              <td>0.8007</td>
+              <td><strong>FGRL-Lite</strong></td>
+              <td>Multi-step transport + RL</td>
+              <td>0.5107</td>
+              <td>16.6080</td>
+            </tr>
+            <tr>
+              <td>Flow Matching (Full)</td>
+              <td>Multi-step latent transport</td>
+              <td>0.7233</td>
+              <td>20.8050</td>
+            </tr>
+            <tr class="best-row best-overall">
+              <td><strong>FGRL-Full</strong></td>
+              <td>Multi-step transport + RL</td>
+              <td><strong>0.7300</strong></td>
+              <td><strong>20.9903</strong></td>
+            </tr>
+            <tr class="sep-row">
+              <td>ALDM (Full data, ~900 scans)</td>
+              <td>One-step latent alignment</td>
+              <td>0.6711</td>
+              <td>18.5200</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="data-eff-box">
+        <p class="data-eff-title">Data Efficiency Highlight</p>
+        <p>Our method uses <strong>10 paired scans</strong>. ALDM on the full SynthRAD2025 dataset (~900 scans) achieves SSIM = 0.6711. Our Flow-guided RL with ~90× fewer scans reaches <strong>SSIM = 0.7300</strong>.</p>
+        <div class="eff-compare">
+          <div class="eff-item">
+            <span class="eff-label">ALDM (full dataset)</span>
+            <span class="eff-val bad">0.6711</span>
+            <span class="eff-sub">SSIM · ~900 scans</span>
+          </div>
+          <div class="eff-arrow">&lt;</div>
+          <div class="eff-item">
+            <span class="eff-label">Ours</span>
+            <span class="eff-val good">0.7300</span>
+            <span class="eff-sub">SSIM · 10 scans</span>
+          </div>
+        </div>
+        <p class="eff-note"><em>Note: different test splits (ALDM: 30 multi-region samples; ours: 1 abdomen scan). Illustrates data efficiency, not a controlled benchmark.</em></p>
+      </div>
+    </section>
+
+    <!-- Visualization -->
+    <section class="section">
+      <div class="section-heading">
+        <p class="kicker">Visualization</p>
+        <h2>Qualitative results and latent-space analysis</h2>
+      </div>
+
+      <figure class="wide-figure compact">
+        <img src="assets/figures/FGRL-full.png" alt="FGRL-Full CT-to-MRI qualitative results" />
+        <figcaption>
+          <strong>FGRL-Full results.</strong> From left to right: input CT image, ground-truth MRI, and the generated MRI. The method successfully preserves large anatomical structures while recovering realistic MRI contrast and fine tissue boundaries even under the 10-scan limited-data setting.
+        </figcaption>
+      </figure>
+
+      <figure class="wide-figure" style="margin-top: 20px">
+        <img src="assets/figures/step.png" alt="16-step latent transport process" />
+        <figcaption>
+          <strong>16-step latent transport.</strong> Starting from the CT latent representation, the generated image is progressively refined toward the target MRI appearance through sequential latent transport updates. Unlike one-step translation, the representation evolves gradually, demonstrating that the framework learns a continuous transport trajectory.
+        </figcaption>
+      </figure>
+
+      <div class="figure-row">
+        <figure class="wide-figure">
+          <img src="assets/figures/FGRL-fullvsflow.png" alt="Comparison between Prior Flow Generator and FGRL-Full" />
+          <figcaption>
+            <strong>FGRL-Full vs. Prior Flow.</strong> Input CT, ground-truth MRI, Prior Flow output, FGRL-Full output. RL improvements are subtle visually but consistent in metrics.
+          </figcaption>
+        </figure>
+        <figure class="wide-figure">
+          <img src="assets/figures/FGRL-litevsflow.png" alt="Comparison between Flow Matching and FGRL-Lite" />
+          <figcaption>
+            <strong>FGRL-Lite vs. Flow Matching.</strong> When the FM prior is weaker, RL corrections produce noticeably sharper anatomical structures and better contrast consistency — demonstrating RL as a local correction mechanism.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="figure-row">
+        <figure class="wide-figure">
+          <img src="assets/figures/umap.png" alt="UMAP embedding of ALDM predictions and MRI latent representations" />
+          <figcaption>
+            <strong>UMAP: ALDM latent collapse.</strong> Under limited data, ALDM predictions cluster far from the real MRI distribution — confirming codebook collapse as the root failure.
+          </figcaption>
+        </figure>
+        <figure class="wide-figure">
+          <img src="assets/figures/flow_pca_traj.png" alt="PCA visualization of latent transport trajectories" />
+          <figcaption>
+            <strong>PCA: latent transport trajectories.</strong> FGRL introduces adaptive non-linear corrections on top of the Flow Matching transport path, bending the trajectory toward the MRI manifold.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Ablation Study -->
+    <section id="ablation" class="section">
+      <div class="section-heading">
+        <p class="kicker">Ablation Study</p>
+        <h2>Is the FM prior necessary? Where should RL intervene?</h2>
+      </div>
+
+      <h3>A — Is the Flow Matching Prior Necessary?</h3>
+      <p>Comparing Raw RL (learns transport from scratch) against FGRL-Lite (steers an FM trajectory). Both use REINFORCE on the 10-scan setting.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Variant</th>
+              <th>FM Prior</th>
+              <th>SSIM ↑</th>
+              <th>PSNR ↑</th>
+              <th>MAE ↓</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Raw RL (w/o image reward)</td>
+              <td>✗</td>
+              <td>0.3558</td>
+              <td>12.430</td>
+              <td>0.1987</td>
+            </tr>
+            <tr>
+              <td>Raw RL (with image reward)</td>
+              <td>✗</td>
+              <td>0.3601</td>
+              <td>12.9503</td>
+              <td>0.1914</td>
+            </tr>
+            <tr class="best-row">
+              <td><strong>FGRL-Lite</strong></td>
+              <td>✓</td>
+              <td>0.5107</td>
               <td>16.6080</td>
               <td>0.0412</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="result-cards">
-        <div><strong>Best SSIM</strong><span>0.8007</span></div>
-        <div><strong>Best PSNR</strong><span>16.6080</span></div>
-        <div><strong>Best MAE</strong><span>0.0412</span></div>
+
+      <div class="positive-box">
+        Raw RL (0.3558–0.3601) performs <em>worse</em> than FM alone (0.4916). Without a transport prior, the policy must simultaneously discover direction, magnitude, and structure of latent transport — an over-specified problem under limited data. <strong>The FM prior is not merely helpful; it is necessary.</strong>
+      </div>
+
+      <h3 style="margin-top: 32px">B — Where Should RL Intervene in the ODE?</h3>
+      <p>Comparing post-flow RL (acts on FM endpoint) against interleaved RL (acts at each of the 16 ODE steps), both using PPO.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Variant</th>
+              <th>RL acts at</th>
+              <th>dist(z, z<sub>MR</sub>)</th>
+              <th>SSIM</th>
+              <th>Δ vs FM</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Flow Matching only</td>
+              <td>—</td>
+              <td>—</td>
+              <td>0.7233</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Post-flow PPO</td>
+              <td>FM endpoint</td>
+              <td>≈ 0.09 (flat)</td>
+              <td>0.7246</td>
+              <td>+0.0013</td>
+            </tr>
+            <tr class="best-row">
+              <td><strong>Interleaved PPO (FGRL-Full)</strong></td>
+              <td>Each of 16 ODE steps</td>
+              <td>≈ 1.09 (rich)</td>
+              <td>0.7300</td>
+              <td>+0.0067</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="positive-box">
+        Interleaved placement achieves <strong>~9× the gain</strong> of post-flow. At the FM endpoint, dist(z<sub>flow</sub>, z<sub>MR</sub>) ≈ 0.09 — the reward landscape is nearly flat and the policy receives no useful gradient. Starting from z<sub>CT</sub> (dist ≈ 1.09) gives 16 steps of non-zero reward signal per episode.
       </div>
     </section>
 
-    <section class="section split">
-      <div>
-        <p class="kicker">Key Insight</p>
-        <h2>Where RL intervenes matters</h2>
-        <p>
-          Post-flow RL acts only after Flow Matching reaches a near-converged endpoint, where the reward
-          landscape is almost flat. Interleaved RL acts at each ODE step, giving denser and more informative
-          feedback for trajectory correction.
-        </p>
+    <!-- RL Algorithm Comparison -->
+    <section class="section">
+      <div class="section-heading">
+        <p class="kicker">Algorithm Comparison</p>
+        <h2>REINFORCE vs. PPO vs. SAC</h2>
       </div>
-      <div class="insight-card">
-        <strong>Design choice</strong>
-        <span>Interleaved RL correction</span>
-        <p>Small local corrections preserve the global flow trajectory while improving the final MRI latent.</p>
+      <p>Three algorithms were explored across two phases. This is a developmental narrative, not a controlled comparison — settings differ between REINFORCE and PPO/SAC.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Algorithm</th>
+              <th>Description</th>
+              <th>Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>REINFORCE</td>
+              <td>Vanilla policy gradient with advantage baseline</td>
+              <td class="outcome-good">SSIM 0.5107 (+0.02 over FM-Lite). Stable in toy experiment.</td>
+            </tr>
+            <tr>
+              <td>SAC</td>
+              <td>Off-policy actor-critic with entropy maximization</td>
+              <td class="outcome-bad">Complete failure — Q-function collapses to 0.</td>
+            </tr>
+            <tr class="best-row">
+              <td><strong>PPO</strong></td>
+              <td>On-policy clipped surrogate (ε = 0.1, 4 epochs/rollout)</td>
+              <td class="outcome-good">SSIM 0.7300 (+0.0067 over FM). Best with action_scale 0.1.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="warning-box">
+        <strong>SAC Q-collapse.</strong> In the post-flow setting, dist(z<sub>flow</sub>, z<sub>MR</sub>) ≈ 0.09. Reward variance across actions falls below 10<sup>−3</sup>; the Bellman target collapses to Q(s,a) ≈ 0; the actor receives no gradient. Off-policy replay amplifies the problem: stale near-zero-reward transitions dominate the replay buffer.
+      </div>
+
+      <div class="insight-box">
+        <strong>Key Insight</strong>
+        <p>Algorithm choice matters less than <strong>where</strong> RL intervenes. Both REINFORCE and PPO improve FM when applied interleaved. SAC fails not because of the algorithm, but because the post-flow reward landscape is too flat for <em>any</em> RL algorithm to learn from.</p>
       </div>
     </section>
+
+    <!-- Analysis -->
+    <section id="analysis" class="section">
+      <div class="section-heading">
+        <p class="kicker">Analysis</p>
+        <h2>Why multi-step beats one-step under limited data</h2>
+      </div>
+      <p>ALDM's VQ-VAE codebook requires sufficient data diversity to span the CT→MRI transformation manifold. With only 10 training pairs the codebook collapses — generated latents cluster far from the real MRI distribution. Flow Matching sidesteps this: MSE on interpolated pairs is well-posed even at 10 samples, and multi-step integration accumulates small, stable corrections rather than forcing a single global mapping.</p>
+
+      <h3>Raw RL learns trajectories but lacks strong priors</h3>
+      <p>RL alone learns meaningful latent transport trajectories — trajectories progressively move from the CT distribution toward the MRI manifold. Training dynamics are stable (reward increases, latent distance decreases monotonically). However, without an explicit prior the policy must simultaneously discover global transport direction and local refinement strategy from sparse rewards — leading to blurry and anatomically inconsistent images despite convergent training.</p>
+
+      <div class="figure-row">
+        <figure class="wide-figure">
+          <img src="assets/figures/raw_rl_pca.png" alt="PCA of raw RL latent trajectories, view 1" />
+          <figcaption>Raw RL PCA — trajectory view 1</figcaption>
+        </figure>
+        <figure class="wide-figure">
+          <img src="assets/figures/raw_rl_pca_2.png" alt="PCA of raw RL latent trajectories, view 2" />
+          <figcaption>Raw RL PCA — trajectory view 2</figcaption>
+        </figure>
+      </div>
+
+      <figure class="wide-figure compact" style="margin-top: 16px">
+        <img src="assets/figures/raw_rl_result.png" alt="Raw RL CT-to-MRI qualitative results" />
+        <figcaption>
+          <strong>Raw RL qualitative results.</strong> Although the model learns progressive latent transport trajectories, the predicted MRI images remain blurry and exhibit noticeable anatomical inconsistencies compared to the ground truth.
+        </figcaption>
+      </figure>
+
+      <h3 style="margin-top: 32px">Training dynamics</h3>
+      <p>Reward, trajectory progress, and latent distance all improve monotonically during training, confirming that the policy learns a meaningful transport strategy rather than random exploration.</p>
+
+      <div class="training-grid">
+        <figure class="wide-figure">
+          <img src="assets/figures/reward.png" alt="Reward training curve" />
+          <figcaption>Reward</figcaption>
+        </figure>
+        <figure class="wide-figure">
+          <img src="assets/figures/progress.png" alt="Trajectory progress training curve" />
+          <figcaption>Progress</figcaption>
+        </figure>
+        <figure class="wide-figure">
+          <img src="assets/figures/dist_after.png" alt="Latent distance training curve" />
+          <figcaption>Latent distance</figcaption>
+        </figure>
+      </div>
+
+      <h3 style="margin-top: 32px">Why RL can improve an already-good FM</h3>
+      <p>FM trajectories are globally optimal (straight-line interpolation during training) but sample-agnostic — the same velocity field is applied to every CT input. The RL policy applies input-specific corrections: the <em>orthogonal</em> component provides non-linear manifold correction, while the <em>parallel</em> component modulates adaptive speed per step. Together they give sample-level trajectory refinement that a fixed velocity field cannot achieve.</p>
+
+      <h3 style="margin-top: 32px">Limitations</h3>
+      <p>RL gains are modest (+0.02 REINFORCE, +0.0067 PPO interleaved). A small action scale is required for stability, limiting per-step correction magnitude. Evaluation covers a single test patient (PPO) and a single scan (REINFORCE), leaving generalization across anatomy and scanner protocols as an open question.</p>
+    </section>
+
+    <!-- Conclusion -->
+    <section class="section split">
+      <div>
+        <p class="kicker">Conclusion</p>
+        <h2>Where to go from here</h2>
+        <p>Our three-stage progression — one-step alignment (ALDM) → multi-step ODE transport (FM) → RL-guided adaptive transport — maps directly to the hypothesis that more steps and adaptivity improve synthesis quality in the data-scarce regime.</p>
+        <p>Key findings: (1) one-step methods collapse under 10 training pairs; (2) multi-step FM alone surpasses ALDM trained on the full dataset with ~90× less data; (3) RL consistently improves FM in both REINFORCE and PPO settings; (4) the critical design choice is <em>where</em> RL acts — interleaved ODE intervention outperforms post-flow by ~9× due to richer reward landscapes.</p>
+        <p><strong>Future work:</strong> joint FM+RL training, adaptive action-scale scheduling, evaluation across all three SynthRAD2025 anatomical regions, and replacing the fixed 16-step ODE with an RL-guided adaptive step-size controller.</p>
+      </div>
+      <div class="insight-card">
+        <strong>Key finding</strong>
+        <span>Where RL acts matters</span>
+        <p>Interleaved ODE intervention outperforms post-flow correction by ~9× due to richer reward landscapes. PPO with clipped updates is most suitable; SAC fails due to Q-collapse in near-converged latent space.</p>
+      </div>
+    </section>
+
   </main>
 
   <footer>
